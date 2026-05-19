@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PineVault — Strategy Marketplace</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0b0f;
+    --surface: #111318;
+    --surface2: #181c24;
+    --surface3: #1e2330;
+    --border: rgba(255,255,255,0.07);
+    --border-strong: rgba(255,255,255,0.14);
+    --accent: #00d4aa;
+    --accent2: #7c6af7;
+    --accent-vip: #f5a623;
+    --text: #e8eaf0;
+    --text2: #8a8fa8;
+    --text3: #555b75;
+    --danger: #ff4d6d;
+    --success: #00d4aa;
+    --font: 'Space Grotesk', sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+    --radius: 12px;
+    --radius-lg: 18px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100vh; overflow-x: hidden; }
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background-image: linear-gradient(rgba(0,212,170,0.03) 1px,transparent 1px), linear-gradient(90deg,rgba(0,212,170,0.03) 1px,transparent 1px);
+    background-size: 48px 48px; pointer-events: none; z-index: 0;
+  }
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(10,11,15,0.92); backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 64px;
+  }
+  .logo { display: flex; align-items: center; gap: 10px; font-size: 1.2rem; font-weight: 700; letter-spacing: -0.02em; text-decoration: none; color: var(--text); }
+  .logo-icon { width: 32px; height: 32px; background: linear-gradient(135deg,var(--accent),var(--accent2)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+  .nav-tabs { display: flex; gap: 4px; }
+  .nav-tab { padding: 6px 16px; border-radius: 8px; border: none; background: transparent; color: var(--text2); font-family: var(--font); font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+  .nav-tab:hover { background: var(--surface2); color: var(--text); }
+  .nav-tab.active { background: var(--surface2); color: var(--text); }
+  .nav-tab.vip-tab { color: var(--accent-vip); border: 1px solid rgba(245,166,35,0.2); }
+  .nav-tab.vip-tab:hover, .nav-tab.vip-tab.active { background: rgba(245,166,35,0.1); color: var(--accent-vip); }
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+  main { position: relative; z-index: 1; }
+  .page { display: none; }
+  .page.active { display: block; }
+  .hero { text-align: center; padding: 80px 2rem 60px; }
+  .hero-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(0,212,170,0.1); border: 1px solid rgba(0,212,170,0.2); border-radius: 100px; padding: 4px 14px; font-size: 0.78rem; font-weight: 600; color: var(--accent); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 24px; }
+  .hero h1 { font-size: clamp(2.4rem,5vw,4rem); font-weight: 700; letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 18px; }
+  .hero h1 span { background: linear-gradient(135deg,var(--accent),var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .hero p { color: var(--text2); font-size: 1.05rem; max-width: 520px; margin: 0 auto; line-height: 1.7; }
+  .section-header { display: flex; align-items: center; justify-content: space-between; padding: 0 2rem 1.5rem; max-width: 1400px; margin: 0 auto; }
+  .section-title { font-size: 1.1rem; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+  .count-badge { background: var(--surface2); border: 1px solid var(--border); border-radius: 100px; padding: 2px 10px; font-size: 0.78rem; color: var(--text2); font-weight: 500; }
+  .strategy-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(320px,1fr)); gap: 20px; padding: 0 2rem 4rem; max-width: 1400px; margin: 0 auto; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; transition: transform 0.2s,border-color 0.2s; cursor: pointer; position: relative; }
+  .card:hover { transform: translateY(-3px); border-color: var(--border-strong); }
+  .card.vip-card { border-color: rgba(245,166,35,0.25); }
+  .card.vip-card:hover { border-color: rgba(245,166,35,0.5); }
+  .card-thumb { width: 100%; height: 180px; object-fit: cover; display: block; background: var(--surface2); }
+  .card-thumb-placeholder { width: 100%; height: 180px; background: var(--surface2); display: flex; align-items: center; justify-content: center; color: var(--text3); font-size: 2.5rem; }
+  .card-body { padding: 16px 18px 18px; }
+  .card-type { display: inline-flex; align-items: center; gap: 5px; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 10px; padding: 3px 10px; border-radius: 100px; }
+  .type-free { background: rgba(0,212,170,0.1); color: var(--accent); border: 1px solid rgba(0,212,170,0.2); }
+  .type-vip { background: rgba(245,166,35,0.12); color: var(--accent-vip); border: 1px solid rgba(245,166,35,0.25); }
+  .card-title { font-size: 1rem; font-weight: 600; margin-bottom: 8px; line-height: 1.4; color: var(--text); }
+  .card-caption { font-size: 0.85rem; color: var(--text2); line-height: 1.6; margin-bottom: 14px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .card-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 14px; border-top: 1px solid var(--border); }
+  .card-date { font-size: 0.76rem; color: var(--text3); font-family: var(--mono); }
+  .card-price { font-size: 1rem; font-weight: 700; color: var(--accent-vip); }
+  .btn-download { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 8px; background: rgba(0,212,170,0.1); border: 1px solid rgba(0,212,170,0.2); color: var(--accent); font-family: var(--font); font-size: 0.8rem; font-weight: 600; cursor: pointer; text-decoration: none; transition: all 0.2s; }
+  .btn-download:hover { background: rgba(0,212,170,0.2); }
+  .empty-state { text-align: center; padding: 80px 2rem; color: var(--text3); }
+  .empty-icon { font-size: 3rem; margin-bottom: 16px; }
+  .empty-state h3 { font-size: 1.1rem; color: var(--text2); margin-bottom: 8px; }
+  .vip-banner { margin: 0 2rem 2rem; max-width: 1400px; margin-left: auto; margin-right: auto; background: linear-gradient(135deg,rgba(245,166,35,0.08),rgba(124,106,247,0.08)); border: 1px solid rgba(245,166,35,0.2); border-radius: var(--radius-lg); padding: 28px 32px; display: flex; align-items: center; gap: 24px; }
+  .vip-crown { font-size: 2.5rem; }
+  .vip-banner h2 { font-size: 1.2rem; font-weight: 700; color: var(--accent-vip); margin-bottom: 4px; }
+  .vip-banner p { font-size: 0.88rem; color: var(--text2); }
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(6px); z-index: 999; display: none; align-items: center; justify-content: center; padding: 20px; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--surface); border: 1px solid var(--border-strong); border-radius: var(--radius-lg); width: 100%; max-width: 560px; max-height: 90vh; overflow-y: auto; padding: 32px; position: relative; }
+  .modal-close { position: absolute; top: 16px; right: 16px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text2); font-size: 1.1rem; transition: all 0.2s; }
+  .modal-close:hover { color: var(--text); border-color: var(--border-strong); }
+  label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--text2); letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 8px; }
+  input[type="text"], input[type="number"], textarea { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px; color: var(--text); font-family: var(--font); font-size: 0.9rem; outline: none; transition: border-color 0.2s; resize: vertical; }
+  input:focus, textarea:focus { border-color: var(--accent); }
+  .form-group { margin-bottom: 20px; }
+  .btn-primary { width: 100%; padding: 13px; border-radius: var(--radius); border: none; background: linear-gradient(135deg,var(--accent),#00a87d); color: #000; font-family: var(--font); font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: opacity 0.2s,transform 0.1s; letter-spacing: -0.01em; }
+  .btn-primary:hover { opacity: 0.9; }
+  .btn-primary.vip-btn { background: linear-gradient(135deg,var(--accent-vip),#c17d0a); color: #000; }
+  .detail-thumb { width: 100%; height: 280px; object-fit: cover; border-radius: var(--radius); margin-bottom: 20px; background: var(--surface2); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .detail-thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .detail-thumb-placeholder { height: 280px; background: var(--surface2); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; font-size: 3rem; margin-bottom: 20px; }
+  .detail-price { font-size: 2rem; font-weight: 700; color: var(--accent-vip); margin: 4px 0 20px; }
+  .badge-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 14px; }
+  .upi-section { background: rgba(245,166,35,0.06); border: 1px solid rgba(245,166,35,0.2); border-radius: var(--radius); padding: 20px; margin-top: 16px; text-align: center; }
+  .upi-id { font-family: var(--mono); font-size: 1rem; color: var(--accent-vip); font-weight: 600; margin: 8px 0; }
+  .qr-display { max-width: 160px; margin: 12px auto; border-radius: 8px; overflow: hidden; }
+  .qr-display img { width: 100%; display: block; border-radius: 8px; }
+  .payment-form { background: rgba(245,166,35,0.06); border: 1px solid rgba(245,166,35,0.2); border-radius: var(--radius); padding: 18px; margin-top: 16px; }
+  .payment-form h3 { font-size: 1rem; color: var(--accent-vip); margin-bottom: 6px; }
+  .payment-form p { font-size: .78rem; color: var(--text2); line-height: 1.6; margin-bottom: 14px; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .unlock-note { font-size: .76rem; color: var(--text3); margin-top: 8px; line-height: 1.5; }
+  .trust-row { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0; }
+  .trust-pill { font-size: .72rem; color: var(--text2); border: 1px solid var(--border); background: var(--surface2); padding: 5px 9px; border-radius: 99px; }
+  .wish-btn { position: absolute; top: 12px; right: 12px; z-index: 3; width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--border-strong); background: rgba(10,11,15,.72); backdrop-filter: blur(8px); color: var(--text2); cursor: pointer; font-size: 1.05rem; display: flex; align-items: center; justify-content: center; transition: .2s; }
+  .wish-btn:hover, .wish-btn.active { color: #ff4d6d; border-color: rgba(255,77,109,.45); background: rgba(255,77,109,.1); }
+  .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
+  .toast { background: var(--surface2); border: 1px solid var(--border-strong); border-radius: var(--radius); padding: 14px 18px; font-size: 0.85rem; color: var(--text); display: flex; align-items: center; gap: 10px; max-width: 320px; animation: slideIn 0.3s ease; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+  .toast.success { border-left: 3px solid var(--success); }
+  .toast.error { border-left: 3px solid var(--danger); }
+  @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 3px; }
+  .file-drop { border: 2px dashed var(--border-strong); border-radius: var(--radius); padding: 28px 20px; text-align: center; cursor: pointer; transition: all 0.2s; background: var(--surface2); position: relative; }
+  .file-drop input[type="file"] { position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; background: transparent; border: none; padding: 0; }
+  @media(max-width:640px) { .two-col { grid-template-columns: 1fr; } .vip-banner { flex-direction: column; text-align: center; } .nav-tabs { overflow-x: auto; max-width: 70vw; } .nav-tab { white-space: nowrap; padding: 6px 10px; } .modal { padding: 24px 18px; } }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="logo" href="#" onclick="showPage('home')">
+    <div class="logo-icon">📈</div>
+    PineVault
+  </a>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showPage('home'); setTab(this)">Strategies</button>
+    <button class="nav-tab vip-tab" onclick="showPage('vip'); setTab(this)">⭐ VIP</button>
+    <button class="nav-tab" onclick="showPage('wishlist'); setTab(this)">♡ Wishlist</button>
+    <button class="nav-tab" onclick="showPage('downloads'); setTab(this)">🔓 My Access</button>
+  </div>
+  <div class="nav-right"></div>
+</nav>
+
+<main>
+
+<!-- HOME PAGE -->
+<div id="page-home" class="page active">
+  <div class="hero">
+    <div class="hero-badge">🔥 TradingView Pine Scripts</div>
+    <h1>Pro Trading<br><span>Strategies</span></h1>
+    <p>Curated Pine Script strategies tested in real market conditions. Download and deploy instantly in TradingView.</p>
+  </div>
+  <div class="section-header">
+    <div class="section-title">All Strategies <span class="count-badge" id="homeCount">0</span></div>
+  </div>
+  <div class="strategy-grid" id="homeGrid"></div>
+</div>
+
+<!-- VIP PAGE -->
+<div id="page-vip" class="page">
+  <div style="padding: 48px 2rem 0; max-width: 1400px; margin: 0 auto;">
+    <div class="vip-banner" style="margin: 0 0 2rem;">
+      <div class="vip-crown">👑</div>
+      <div>
+        <h2>VIP Strategy Club</h2>
+        <p>Exclusive high-performance strategies. Pay via UPI and get instant access to the Pine Script file.</p>
+      </div>
+    </div>
+  </div>
+  <div class="section-header">
+    <div class="section-title">VIP Strategies <span class="count-badge" id="vipCount">0</span></div>
+  </div>
+  <div class="strategy-grid" id="vipGrid"></div>
+</div>
+
+<!-- WISHLIST PAGE -->
+<div id="page-wishlist" class="page">
+  <div class="hero" style="padding-bottom:30px;">
+    <div class="hero-badge">♡ Saved Strategies</div>
+    <h1>Your <span>Wishlist</span></h1>
+    <p>Save VIP or free strategies you like and come back later.</p>
+  </div>
+  <div class="strategy-grid" id="wishlistGrid"></div>
+</div>
+
+<!-- MY ACCESS PAGE -->
+<div id="page-downloads" class="page">
+  <div class="hero" style="padding-bottom:30px;">
+    <div class="hero-badge">🔓 Approved Downloads</div>
+    <h1>My <span>Access</span></h1>
+    <p>Enter your phone number to see VIP strategies approved by admin.</p>
+  </div>
+  <div style="max-width:520px;margin:0 auto 28px;padding:0 2rem;display:flex;gap:10px;">
+    <input type="text" id="accessPhone" placeholder="Enter phone number used in payment request">
+    <button class="btn-download" style="white-space:nowrap" onclick="renderMyAccess()">Check Access</button>
+  </div>
+  <div class="strategy-grid" id="downloadsGrid"></div>
+</div>
+
+</main>
+
+<!-- STRATEGY DETAIL MODAL -->
+<div class="modal-overlay" id="detailModal" style="align-items:center;justify-content:center;">
+  <div class="modal" style="max-width:680px;">
+    <button class="modal-close" onclick="closeDetailModal()">✕</button>
+    <div id="detailContent"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+// ── HOW THIS WORKS ──
+// Admin saves data to localStorage via admin.html (opened only by you, locally).
+// This public store reads that same localStorage — same browser = same data.
+// Pine script code for VIP strategies is NEVER stored here; only a download token
+// is stored. When admin approves a request, the public store shows a contact note.
+// Free strategy code IS stored and shown (as intended).
+
+let strategies = [];
+let paymentRequests = [];
+let wishlist = JSON.parse(localStorage.getItem('pv_wishlist') || '[]');
+let payShotData = null;
+
+function loadData() {
+  strategies = JSON.parse(localStorage.getItem('pv_strategies') || '[]');
+  paymentRequests = JSON.parse(localStorage.getItem('pv_payment_requests') || '[]');
+}
+
+// ── NAV ──
+function showPage(p) {
+  document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+  document.getElementById('page-' + p).classList.add('active');
+}
+function setTab(el) {
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ── RENDER ──
+function renderAll() {
+  loadData();
+  renderGrid('homeGrid', strategies.filter(s => s.type === 'free'), 'homeCount');
+  renderGrid('vipGrid', strategies.filter(s => s.type === 'vip'), 'vipCount');
+  renderWishlist();
+}
+
+function renderGrid(containerId, items, countId) {
+  const container = document.getElementById(containerId);
+  const countEl = document.getElementById(countId);
+  countEl.textContent = items.length;
+  if (items.length === 0) {
+    container.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">📭</div><h3>No strategies yet</h3><p style="font-size:0.82rem;color:var(--text3);margin-top:4px">Check back soon</p></div>`;
+    return;
+  }
+  container.innerHTML = items.map(s => cardHTML(s)).join('');
+}
+
+function cardHTML(s) {
+  const thumbHTML = s.image ? `<img class="card-thumb" src="${s.image}" alt="${s.name}">` : `<div class="card-thumb-placeholder">📈</div>`;
+  const wished = wishlist.includes(s.id);
+  const footer = s.type === 'vip'
+    ? `<span class="card-date">${s.date}</span><span class="card-price">₹${s.price}</span>`
+    : `<span class="card-date">${s.date}</span><a class="btn-download" onclick="downloadFreeCode(event,'${s.id}')">⬇ Download</a>`;
+  return `<div class="card ${s.type==='vip'?'vip-card':''}" onclick="openDetail('${s.id}')">
+    <button class="wish-btn ${wished?'active':''}" onclick="toggleWishlist(event,'${s.id}')">${wished?'♥':'♡'}</button>
+    ${thumbHTML}
+    <div class="card-body">
+      <span class="card-type ${s.type==='vip'?'type-vip':'type-free'}">${s.type==='vip'?'⭐ VIP':'🆓 FREE'}</span>
+      <div class="card-title">${escHtml(s.name)}</div>
+      ${s.caption?`<div class="card-caption">${escHtml(s.caption)}</div>`:''}
+      <div class="card-footer">${footer}</div>
+    </div>
+  </div>`;
+}
+
+function toggleWishlist(e, id) {
+  e.stopPropagation();
+  if (wishlist.includes(id)) { wishlist = wishlist.filter(x => x !== id); toast('Removed from wishlist', 'success'); }
+  else { wishlist.push(id); toast('Added to wishlist ♡', 'success'); }
+  localStorage.setItem('pv_wishlist', JSON.stringify(wishlist));
+  renderAll();
+}
+
+function renderWishlist() {
+  const items = strategies.filter(s => wishlist.includes(s.id));
+  const container = document.getElementById('wishlistGrid');
+  if (!container) return;
+  if (items.length === 0) {
+    container.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">♡</div><h3>No wishlist yet</h3><p style="font-size:0.82rem;color:var(--text3);margin-top:4px">Tap the heart on any strategy.</p></div>`;
+    return;
+  }
+  container.innerHTML = items.map(s => cardHTML(s)).join('');
+}
+
+// ── FREE DOWNLOAD ──
+// Free strategies store code openly (that's the point — they're free)
+function downloadFreeCode(e, id) {
+  e.stopPropagation();
+  const s = strategies.find(x => x.id === id);
+  if (!s || s.type !== 'free') return;
+  const blob = new Blob([s.code], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = s.name.replace(/[^a-z0-9]/gi, '_') + '.pine';
+  a.click();
+  toast('Downloading strategy...', 'success');
+}
+
+// ── VIP APPROVED DOWNLOAD ──
+// VIP code is delivered via a secret link stored only in admin.html
+// When approved, the request stores a deliveryLink set by admin
+function downloadApprovedVip(e, requestId) {
+  e.stopPropagation();
+  loadData();
+  const r = paymentRequests.find(x => x.id === requestId && x.status === 'approved');
+  if (!r) { toast('Access not found or not yet approved', 'error'); return; }
+  if (r.deliveryLink) {
+    window.open(r.deliveryLink, '_blank');
+    toast('Opening download link...', 'success');
+  } else {
+    toast('Admin will send you the file directly. Check WhatsApp/email.', 'success');
+  }
+}
+
+// ── DETAIL MODAL ──
+function openDetail(id) {
+  loadData();
+  const s = strategies.find(x => x.id === id);
+  if (!s) return;
+  const thumbHTML = s.image
+    ? `<div class="detail-thumb"><img src="${s.image}" alt="${s.name}"></div>`
+    : `<div class="detail-thumb-placeholder">📈</div>`;
+
+  let content = `
+    ${thumbHTML}
+    <div class="badge-row">
+      <span class="card-type ${s.type==='vip'?'type-vip':'type-free'}">${s.type==='vip'?'⭐ VIP':'🆓 FREE'}</span>
+      <span style="font-size:0.75rem;color:var(--text3);font-family:var(--mono)">${s.date}</span>
+    </div>
+    <div style="font-size:1.4rem;font-weight:700;margin-bottom:8px;">${escHtml(s.name)}</div>
+    ${s.caption?`<p style="color:var(--text2);font-size:0.9rem;line-height:1.7;margin-bottom:18px;">${escHtml(s.caption)}</p>`:''}
+  `;
+
+  if (s.type === 'vip') {
+    content += `
+      <div class="detail-price">₹${s.price}</div>
+      <div class="trust-row">
+        <span class="trust-pill">✅ Admin verified delivery</span>
+        <span class="trust-pill">🔓 Download unlock after approval</span>
+        <span class="trust-pill">⚠️ Not financial advice</span>
+      </div>
+      <div class="upi-section">
+        <div style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--text3);margin-bottom:4px;">Pay via UPI</div>
+        <div class="upi-id">${escHtml(s.upi)}</div>
+        ${s.qr?`<div class="qr-display"><img src="${s.qr}" alt="QR Code"></div>`:''}
+        <div style="font-size:0.76rem;color:var(--text2);margin-top:10px;">After payment, submit details below. Admin will approve and unlock download.</div>
+      </div>
+      <div class="payment-form">
+        <h3>Request VIP Access</h3>
+        <p>Fill this after payment. Your request will appear in admin dashboard.</p>
+        <div class="two-col">
+          <div class="form-group"><label>Name</label><input type="text" id="payName" placeholder="Your name"></div>
+          <div class="form-group"><label>Phone / WhatsApp</label><input type="text" id="payPhone" placeholder="10-digit phone"></div>
+        </div>
+        <div class="two-col">
+          <div class="form-group"><label>Amount Paid</label><input type="number" id="payAmount" value="${s.price}" placeholder="Amount"></div>
+          <div class="form-group"><label>Transaction ID / UTR</label><input type="text" id="payTxn" placeholder="UPI transaction ID"></div>
+        </div>
+        <div class="form-group"><label>Payment Screenshot</label><div class="file-drop"><input type="file" id="payShot" accept="image/*" onchange="handlePaymentShot(this)"><div style="pointer-events:none;padding:4px 0;font-size:.85rem;color:var(--text2)">📎 Attach screenshot</div></div></div>
+        <button class="btn-primary vip-btn" onclick="submitPaymentRequest('${s.id}')">Submit Payment Request →</button>
+        <div class="unlock-note">Use the same phone number later in "My Access" to download after approval.</div>
+      </div>
+    `;
+  } else {
+    // FREE: show code preview (free = intentionally public)
+    const preview = s.code ? (s.code.slice(0, 2000) + (s.code.length > 2000 ? '\n\n... (truncated, download for full)' : '')) : '';
+    content += `
+      <div style="display:flex;justify-content:flex-end;margin-bottom:8px;">
+        <a class="btn-download" onclick="downloadFreeCode(event,'${s.id}')">⬇ Download .pine</a>
+      </div>
+      <div style="font-size:0.78rem;color:var(--text2);margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Pine Script Preview</div>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;font-family:var(--mono);font-size:0.78rem;color:var(--accent);overflow-x:auto;white-space:pre;max-height:300px;overflow-y:auto;">${escHtml(preview)}</div>
+    `;
+  }
+
+  document.getElementById('detailContent').innerHTML = content;
+  document.getElementById('detailModal').classList.add('open');
+}
+
+function closeDetailModal() {
+  document.getElementById('detailModal').classList.remove('open');
+}
+
+// ── PAYMENT REQUEST ──
+function handlePaymentShot(input) {
+  const file = input.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => { payShotData = e.target.result; toast('Screenshot attached', 'success'); };
+  reader.readAsDataURL(file);
+}
+
+function submitPaymentRequest(strategyId) {
+  loadData();
+  const s = strategies.find(x => x.id === strategyId); if (!s) return;
+  const name = document.getElementById('payName').value.trim();
+  const phone = document.getElementById('payPhone').value.trim();
+  const amount = document.getElementById('payAmount').value.trim();
+  const txn = document.getElementById('payTxn').value.trim();
+  if (!name || !phone || !amount || !txn) { toast('Fill name, phone, amount and transaction ID', 'error'); return; }
+  const req = {
+    id: Date.now().toString(),
+    strategyId, strategyName: s.name,
+    name, phone, amount, txn,
+    screenshot: payShotData || null,
+    status: 'pending',
+    deliveryLink: null,
+    date: new Date().toLocaleString('en-IN')
+  };
+  paymentRequests.unshift(req);
+  localStorage.setItem('pv_payment_requests', JSON.stringify(paymentRequests));
+  payShotData = null;
+  closeDetailModal();
+  toast('Request submitted. Wait for admin approval ✅', 'success');
+}
+
+// ── MY ACCESS ──
+function renderMyAccess() {
+  loadData();
+  const phoneEl = document.getElementById('accessPhone');
+  const c = document.getElementById('downloadsGrid');
+  if (!c) return;
+  const phone = phoneEl.value.trim();
+  if (!phone) {
+    c.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">🔎</div><h3>Enter phone number</h3><p style="font-size:0.82rem;color:var(--text3);margin-top:4px">Use the same phone number submitted after payment.</p></div>`;
+    return;
+  }
+  const approved = paymentRequests.filter(r => r.phone === phone && r.status === 'approved');
+  if (approved.length === 0) {
+    c.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">⏳</div><h3>No approved downloads yet</h3><p style="font-size:0.82rem;color:var(--text3);margin-top:4px">Your request may still be pending.</p></div>`;
+    return;
+  }
+  c.innerHTML = approved.map(r => {
+    const s = strategies.find(x => x.id === r.strategyId);
+    if (!s) return '';
+    return `<div class="card vip-card">
+      ${s.image?`<img class="card-thumb" src="${s.image}" alt="${s.name}">`:`<div class="card-thumb-placeholder">📈</div>`}
+      <div class="card-body">
+        <span class="card-type type-vip">🔓 APPROVED</span>
+        <div class="card-title">${escHtml(s.name)}</div>
+        ${s.caption?`<div class="card-caption">${escHtml(s.caption)}</div>`:''}
+        <div class="card-footer">
+          <span class="card-date">VIP Access</span>
+          <a class="btn-download" onclick="downloadApprovedVip(event,'${r.id}')">⬇ Download</a>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── TOAST ──
+function toast(msg, type = 'success') {
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.innerHTML = `<span>${type==='success'?'✅':'❌'}</span> ${msg}`;
+  document.getElementById('toastContainer').appendChild(el);
+  setTimeout(() => el.remove(), 3500);
+}
+
+function escHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── INIT ──
+renderAll();
+renderMyAccess();
+
+document.getElementById('detailModal').addEventListener('click', function(e) {
+  if (e.target === this) closeDetailModal();
+});
+</script>
+</body>
+</html>
