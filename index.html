@@ -6,6 +6,7 @@
 <title>PineVault — Strategy Marketplace</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/lz-string@1.5.0/libs/lz-string.min.js"></script>
 <style>
   :root {
     --bg: #0a0b0f; --surface: #111318; --surface2: #181c24; --surface3: #1e2330;
@@ -122,7 +123,6 @@
 
 <div class="loading-bar" id="loadingBar"></div>
 
-<!-- NAV -->
 <nav>
   <a class="logo" href="#" onclick="showPage('home')">
     <div class="logo-icon">📈</div>
@@ -138,8 +138,6 @@
 </nav>
 
 <main>
-
-<!-- HOME PAGE -->
 <div id="page-home" class="page active">
   <div class="hero">
     <div class="hero-badge">🔥 TradingView Pine Scripts</div>
@@ -152,7 +150,6 @@
   <div class="strategy-grid" id="homeGrid"><div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">⏳</div><h3>Loading strategies…</h3></div></div>
 </div>
 
-<!-- VIP PAGE -->
 <div id="page-vip" class="page">
   <div style="padding: 48px 2rem 0; max-width: 1400px; margin: 0 auto;">
     <div class="vip-banner" style="margin: 0 0 2rem;">
@@ -169,7 +166,6 @@
   <div class="strategy-grid" id="vipGrid"></div>
 </div>
 
-<!-- WISHLIST PAGE -->
 <div id="page-wishlist" class="page">
   <div class="hero" style="padding-bottom:30px;">
     <div class="hero-badge">♡ Saved Strategies</div>
@@ -179,7 +175,6 @@
   <div class="strategy-grid" id="wishlistGrid"></div>
 </div>
 
-<!-- MY ACCESS PAGE -->
 <div id="page-downloads" class="page">
   <div class="hero" style="padding-bottom:30px;">
     <div class="hero-badge">🔓 Approved Downloads</div>
@@ -192,10 +187,8 @@
   </div>
   <div class="strategy-grid" id="downloadsGrid"></div>
 </div>
-
 </main>
 
-<!-- STRATEGY DETAIL MODAL -->
 <div class="modal-overlay" id="detailModal" style="align-items:center;justify-content:center;">
   <div class="modal" style="max-width:680px;">
     <button class="modal-close" onclick="closeDetailModal()">✕</button>
@@ -203,32 +196,30 @@
   </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast-container" id="toastContainer"></div>
 
 <script>
-// ════════════════════════════════════════════════
-//  JSONBIN CONFIG — shared cloud storage
-// ════════════════════════════════════════════════
 const BIN_ID  = '6a0be9676610dd3ae86aa9a0';
 const API_KEY = '$2a$10$Plp0mbu0EX8HaPCAmx2rouVjVcrRGBo9DGa8VNQiH0MdtKT0FF8mO';
 const BIN_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
 
-// ════════════════════════════════════════════════
-//  STATE
-// ════════════════════════════════════════════════
 let strategies = [];
 let paymentRequests = [];
-let wishlist = JSON.parse(localStorage.getItem('pv_wishlist') || '[]'); // wishlist stays local (per user)
+let wishlist = JSON.parse(localStorage.getItem('pv_wishlist') || '[]');
 let payShotData = null;
 
-// ── LOADING BAR ──
 function setLoading(pct) {
   document.getElementById('loadingBar').style.width = pct + '%';
   if (pct >= 100) setTimeout(() => { document.getElementById('loadingBar').style.width = '0'; }, 400);
 }
 
-// ── JSONBIN READ ──
+function decompressCode(compressed) {
+  if (!compressed) return '';
+  try {
+    return LZString.decompressFromBase64(compressed);
+  } catch(e) { return compressed; }
+}
+
 async function loadData() {
   setLoading(20);
   try {
@@ -238,8 +229,8 @@ async function loadData() {
     if (!res.ok) throw new Error('Fetch failed: ' + res.status);
     const json = await res.json();
     const data = json.record || {};
-    strategies       = data.strategies        || [];
-    paymentRequests  = data.paymentRequests   || [];
+    strategies = data.strategies || [];
+    paymentRequests = data.paymentRequests || [];
     setLoading(100);
     return true;
   } catch(e) {
@@ -249,7 +240,6 @@ async function loadData() {
   }
 }
 
-// ── JSONBIN WRITE (used only by payment request submission) ──
 async function saveData() {
   try {
     const res = await fetch(BIN_URL, {
@@ -268,7 +258,6 @@ async function saveData() {
   }
 }
 
-// ── NAV ──
 function showPage(p) {
   document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
   document.getElementById('page-' + p).classList.add('active');
@@ -278,7 +267,6 @@ function setTab(el) {
   el.classList.add('active');
 }
 
-// ── RENDER ──
 function renderAll() {
   renderGrid('homeGrid', strategies.filter(s => s.type === 'free'), 'homeCount');
   renderGrid('vipGrid', strategies.filter(s => s.type === 'vip'), 'vipCount');
@@ -287,7 +275,8 @@ function renderAll() {
 
 function renderGrid(containerId, items, countId) {
   const container = document.getElementById(containerId);
-  const countEl   = document.getElementById(countId);
+  const countEl = document.getElementById(countId);
+  if (!container) return;
   countEl.textContent = items.length;
   if (items.length === 0) {
     container.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">📭</div><h3>No strategies yet</h3><p style="font-size:0.82rem;color:var(--text3);margin-top:4px">Check back soon</p></div>`;
@@ -298,8 +287,8 @@ function renderGrid(containerId, items, countId) {
 
 function cardHTML(s) {
   const thumbHTML = s.image ? `<img class="card-thumb" src="${s.image}" alt="${s.name}">` : `<div class="card-thumb-placeholder">📈</div>`;
-  const wished    = wishlist.includes(s.id);
-  const footer    = s.type === 'vip'
+  const wished = wishlist.includes(s.id);
+  const footer = s.type === 'vip'
     ? `<span class="card-date">${s.date}</span><span class="card-price">₹${s.price}</span>`
     : `<span class="card-date">${s.date}</span><a class="btn-download" onclick="downloadFreeCode(event,'${s.id}')">⬇ Download</a>`;
   return `<div class="card ${s.type==='vip'?'vip-card':''}" onclick="openDetail('${s.id}')">
@@ -323,7 +312,7 @@ function toggleWishlist(e, id) {
 }
 
 function renderWishlist() {
-  const items     = strategies.filter(s => wishlist.includes(s.id));
+  const items = strategies.filter(s => wishlist.includes(s.id));
   const container = document.getElementById('wishlistGrid');
   if (!container) return;
   if (items.length === 0) {
@@ -333,20 +322,19 @@ function renderWishlist() {
   container.innerHTML = items.map(s => cardHTML(s)).join('');
 }
 
-// ── FREE DOWNLOAD ──
 function downloadFreeCode(e, id) {
   e.stopPropagation();
   const s = strategies.find(x => x.id === id);
   if (!s || s.type !== 'free') return;
-  const blob = new Blob([s.code], { type: 'text/plain' });
-  const a    = document.createElement('a');
-  a.href     = URL.createObjectURL(blob);
+  let code = s.code_compressed ? decompressCode(s.code_compressed) : (s.code || '');
+  const blob = new Blob([code], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
   a.download = s.name.replace(/[^a-z0-9]/gi, '_') + '.pine';
   a.click();
   toast('Downloading strategy...', 'success');
 }
 
-// ── VIP APPROVED DOWNLOAD ──
 function downloadApprovedVip(e, requestId) {
   e.stopPropagation();
   const r = paymentRequests.find(x => x.id === requestId && x.status === 'approved');
@@ -359,7 +347,6 @@ function downloadApprovedVip(e, requestId) {
   }
 }
 
-// ── DETAIL MODAL ──
 function openDetail(id) {
   const s = strategies.find(x => x.id === id);
   if (!s) return;
@@ -408,7 +395,8 @@ function openDetail(id) {
       </div>
     `;
   } else {
-    const preview = s.code ? (s.code.slice(0, 2000) + (s.code.length > 2000 ? '\n\n... (truncated, download for full)' : '')) : '';
+    let fullCode = s.code_compressed ? decompressCode(s.code_compressed) : (s.code || '');
+    let preview = fullCode.slice(0, 2000) + (fullCode.length > 2000 ? '\n\n... (truncated, download for full)' : '');
     content += `
       <div style="display:flex;justify-content:flex-end;margin-bottom:8px;">
         <a class="btn-download" onclick="downloadFreeCode(event,'${s.id}')">⬇ Download .pine</a>
@@ -426,7 +414,6 @@ function closeDetailModal() {
   document.getElementById('detailModal').classList.remove('open');
 }
 
-// ── PAYMENT REQUEST ──
 function handlePaymentShot(input) {
   const file = input.files[0]; if (!file) return;
   const reader = new FileReader();
@@ -436,10 +423,10 @@ function handlePaymentShot(input) {
 
 async function submitPaymentRequest(strategyId) {
   const s = strategies.find(x => x.id === strategyId); if (!s) return;
-  const name   = document.getElementById('payName').value.trim();
-  const phone  = document.getElementById('payPhone').value.trim();
+  const name = document.getElementById('payName').value.trim();
+  const phone = document.getElementById('payPhone').value.trim();
   const amount = document.getElementById('payAmount').value.trim();
-  const txn    = document.getElementById('payTxn').value.trim();
+  const txn = document.getElementById('payTxn').value.trim();
   if (!name || !phone || !amount || !txn) { toast('Fill name, phone, amount and transaction ID', 'error'); return; }
 
   const req = {
@@ -454,23 +441,21 @@ async function submitPaymentRequest(strategyId) {
 
   paymentRequests.unshift(req);
   const ok = await saveData();
-  if (!ok) { paymentRequests.shift(); return; } // rollback on failure
+  if (!ok) { paymentRequests.shift(); return; }
   payShotData = null;
   closeDetailModal();
   toast('Request submitted. Wait for admin approval ✅', 'success');
 }
 
-// ── MY ACCESS ──
 async function renderMyAccess() {
   const phoneEl = document.getElementById('accessPhone');
-  const c       = document.getElementById('downloadsGrid');
+  const c = document.getElementById('downloadsGrid');
   if (!c) return;
   const phone = phoneEl.value.trim();
   if (!phone) {
     c.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">🔎</div><h3>Enter phone number</h3><p style="font-size:0.82rem;color:var(--text3);margin-top:4px">Use the same phone number submitted after payment.</p></div>`;
     return;
   }
-  // Reload fresh data before checking
   await loadData();
   const approved = paymentRequests.filter(r => r.phone === phone && r.status === 'approved');
   if (approved.length === 0) {
@@ -495,7 +480,6 @@ async function renderMyAccess() {
   }).join('');
 }
 
-// ── TOAST ──
 function toast(msg, type = 'success') {
   const el = document.createElement('div');
   el.className = `toast ${type}`;
@@ -508,7 +492,6 @@ function escHtml(str) {
   return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-// ── INIT ──
 (async () => {
   await loadData();
   renderAll();
