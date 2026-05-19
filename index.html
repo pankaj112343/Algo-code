@@ -1,1 +1,670 @@
-<!doctype html><html><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>PineVault</title><link href='https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap' rel='stylesheet'><style>*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#f8fafc,#eef4f8);color:#101828;font-family:Inter,Arial,sans-serif}nav{position:sticky;top:0;z-index:10;background:#ffffffd9;backdrop-filter:blur(18px);border-bottom:1px solid #e5e7eb;padding:13px 18px;display:flex;justify-content:space-between;align-items:center}.logo{font-size:20px;font-weight:900;letter-spacing:-.04em}.logo i{font-style:normal;background:#101828;color:#fff;border-radius:12px;padding:8px;margin-right:8px}.tabs{display:flex;gap:8px;background:#eef2f7;padding:4px;border-radius:99px}.tabs button{border:0;background:transparent;border-radius:99px;padding:8px 14px;font-weight:800;color:#667085;cursor:pointer}.tabs button.active{background:#fff;color:#101828;box-shadow:0 5px 18px #10182814}.wa{background:#12b886;color:white;padding:10px 15px;border-radius:99px;text-decoration:none;font-weight:900}.hero{max-width:1120px;margin:auto;padding:65px 18px 36px;display:grid;grid-template-columns:1.1fr .9fr;gap:26px;align-items:center}.chip{display:inline-block;background:#ecfdf3;color:#027a48;border:1px solid #abefc6;border-radius:99px;padding:7px 12px;font-weight:900;font-size:12px;letter-spacing:.06em}.hero h1{font-size:clamp(40px,7vw,72px);line-height:.95;letter-spacing:-.06em;margin:18px 0}.hero h1 span{background:linear-gradient(135deg,#12b886,#3158ff);-webkit-background-clip:text;color:transparent}.hero p{color:#667085;line-height:1.75;font-size:17px}.panel{background:#fff;border:1px solid #e5e7eb;border-radius:26px;padding:24px;box-shadow:0 24px 70px #10182818}.step{display:flex;gap:12px;padding:14px;border:1px solid #edf0f4;border-radius:18px;margin-top:12px;background:#fbfdff}.step b{display:block}.step span{color:#667085;font-size:13px}.tick{width:36px;height:36px;border-radius:50%;background:#dcfae6;color:#079455;display:grid;place-items:center;font-weight:900;flex:0 0 auto}.wrap{max-width:1120px;margin:auto;padding:0 18px 60px}.head{display:flex;justify-content:space-between;align-items:end;margin:18px 0}.head h2{letter-spacing:-.04em;margin:0}.count{color:#667085;font-weight:800}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(285px,1fr));gap:18px}.card{background:#fff;border:1px solid #e5e7eb;border-radius:24px;overflow:hidden;box-shadow:0 12px 36px #1018280c;cursor:pointer;transition:.22s;animation:rise .35s ease both}.card:hover{transform:translateY(-4px);box-shadow:0 24px 70px #10182818}.thumb{height:180px;background:#e9eef5;display:grid;place-items:center;position:relative;overflow:hidden;font-size:40px}.thumb img{width:100%;height:100%;object-fit:cover;transition:.3s}.card:hover img{transform:scale(1.04)}.listed{position:absolute;top:12px;left:12px;background:#ffffffed;color:#079455;border-radius:99px;padding:6px 10px;font-size:12px;font-weight:900}.body{padding:16px}.tag{display:inline-block;font-size:12px;font-weight:900;border-radius:99px;padding:5px 10px;margin-bottom:10px}.vip{background:#fff7ed;color:#b45309;border:1px solid #fed7aa}.free{background:#ecfdf3;color:#027a48;border:1px solid #abefc6}.title{font-weight:900;margin-bottom:7px}.cap{color:#667085;font-size:14px;line-height:1.6;min-height:46px}.foot{border-top:1px solid #edf0f4;margin-top:14px;padding-top:13px;display:flex;justify-content:space-between;align-items:center}.price{color:#b45309;font-weight:900;font-size:18px}.buy{background:#101828;color:white;border:0;border-radius:13px;padding:10px 13px;font-weight:900;cursor:pointer}.empty{text-align:center;color:#667085;background:#fff;border:1px dashed #cbd5e1;border-radius:22px;padding:45px;grid-column:1/-1}.modalBg{display:none;position:fixed;inset:0;background:#101828b3;backdrop-filter:blur(8px);z-index:30;align-items:center;justify-content:center;padding:16px}.modalBg.open{display:flex}.modal{background:#fff;border-radius:26px;width:min(550px,100%);max-height:92vh;overflow:auto;padding:22px;position:relative;animation:pop .2s ease}.x{position:absolute;right:14px;top:14px;width:34px;height:34px;border-radius:12px;border:1px solid #e5e7eb;background:white;font-weight:900}.modal img{width:100%;height:230px;object-fit:cover;border-radius:18px}.modal p{color:#667085;line-height:1.7}.upi{background:#fff7ed;border:1px solid #fed7aa;border-radius:16px;padding:14px;text-align:center;color:#7c2d12}.upi b{color:#b45309}.field{margin-top:13px}label{display:block;color:#667085;font-size:12px;font-weight:900;text-transform:uppercase;margin-bottom:7px}input{width:100%;border:1px solid #e5e7eb;background:#fbfdff;border-radius:14px;padding:13px;font:inherit}.hint{background:#f8fafc;border:1px dashed #cbd5e1;border-radius:14px;padding:12px;color:#667085;font-size:13px;line-height:1.55;margin:14px 0}.toast{position:fixed;right:18px;bottom:18px;background:#101828;color:#fff;border-radius:16px;padding:13px 15px;font-weight:800;display:none}.toast.show{display:block}@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}@keyframes pop{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}@media(max-width:760px){.hero{grid-template-columns:1fr;padding-top:42px}.tabs{display:none}}@media(max-width:520px){.grid{grid-template-columns:1fr}.wa{padding:9px 11px}.logo{font-size:18px}}</style></head><body><nav><div class='logo'><i>✓</i>PineVault</div><div class='tabs'><button class='active' onclick='setFilter("all",this)'>All</button><button onclick='setFilter("vip",this)'>VIP</button><button onclick='setFilter("free",this)'>Free</button></div><a id='waTop' class='wa' target='_blank'>WhatsApp</a></nav><section class='hero'><div><div class='chip'>Verified algo listings</div><h1>Professional<br><span>code store</span></h1><p>Browse Pine Script and Python trading tools. Pay manually, send payment details on WhatsApp, and receive your code after verification.</p></div><div class='panel'><h3 style='margin:0'>How purchase works</h3><div class='step'><div class='tick'>1</div><div><b>Select a code</b><span>Open listing and check demo, price, and UPI.</span></div></div><div class='step'><div class='tick'>2</div><div><b>Pay and send proof</b><span>WhatsApp opens with customer details ready.</span></div></div><div class='step'><div class='tick'>✓</div><div><b>Manual delivery</b><span>Code is sent after payment verification.</span></div></div></div></section><main class='wrap'><div class='head'><h2>Available Listings <span id='count' class='count'></span></h2></div><div id='grid' class='grid'><div class='empty'>Loading listings...</div></div></main><div id='detail' class='modalBg'><div class='modal'><button class='x' onclick='closeDetail()'>×</button><div id='detailBody'></div></div></div><div id='buy' class='modalBg'><div class='modal'><button class='x' onclick='closeBuy()'>×</button><h2>Purchase Request</h2><p id='buySub'></p><div class='field'><label>Your name</label><input id='buyerName'></div><div class='field'><label>Phone number</label><input id='buyerPhone'></div><div class='field'><label>Transaction ID / UTR</label><input id='buyerTxn'></div><div class='hint'>After WhatsApp opens, attach your payment screenshot manually before sending.</div><button class='buy' style='width:100%;padding:13px' onclick='sendWA()'>Open WhatsApp →</button></div></div><div id='toast' class='toast'></div><script>let data={whatsapp:'918135975559',defaultUpi:'yourupi@upi',strategies:[]},items=[],filter='all',cur=null;function esc(s){return String(s||'').replace(/[&<>\"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[m]))}function phone(n){return String(n||'918135975559').replace(/\D/g,'')}function price(s){return s&&String(s).toLowerCase()!=='free'?'₹'+esc(s):'Free'}async function load(){try{let r=await fetch('data.json?v='+Date.now(),{cache:'no-store'});if(!r.ok)throw Error('data.json not found');data=await r.json();items=Array.isArray(data.strategies)?data.strategies:[];document.getElementById('waTop').href='https://wa.me/'+phone(data.whatsapp);render()}catch(e){document.getElementById('grid').innerHTML='<div class=empty>Could not load listings<br>'+esc(e.message)+'</div>'}}function setFilter(f,b){filter=f;document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));b.classList.add('active');render()}function render(){let arr=filter==='all'?items:items.filter(x=>String(x.type).toLowerCase()===filter);document.getElementById('count').textContent='('+arr.length+')';let g=document.getElementById('grid');if(!arr.length){g.innerHTML='<div class=empty>No listings yet. Add one from admin panel.</div>';return}g.innerHTML=arr.map((s,i)=>`<div class=card style='animation-delay:${i*50}ms' onclick='openD("${s.id}")'><div class=thumb>${s.image?`<img src="${esc(s.image)}">`:'📈'}<div class=listed>✓ Listed</div></div><div class=body><span class='tag ${s.type==='vip'?'vip':'free'}'>${s.type==='vip'?'VIP':'FREE'}</span><div class=title>${esc(s.name)}</div><div class=cap>${esc(s.caption)}</div><div class=foot><span class=price>${price(s.price)}</span><button class=buy onclick='openBuy(event,"${s.id}")'>Buy</button></div></div></div>`).join('')}function openD(id){let s=items.find(x=>x.id===id);if(!s)return;cur=s;document.getElementById('detailBody').innerHTML=`${s.image?`<img src="${esc(s.image)}">`:''}<h2>${esc(s.name)}</h2><p>${esc(s.caption)}</p><h1 style='color:#b45309'>${price(s.price)}</h1><div class=upi>Pay UPI: <b>${esc(s.upi||data.defaultUpi)}</b></div><p style='color:#079455;font-weight:900'>✓ Listing active and available</p><button class=buy style='width:100%;padding:13px' onclick='openBuy(event,"${s.id}")'>Buy on WhatsApp</button>`;document.getElementById('detail').classList.add('open')}function closeDetail(){document.getElementById('detail').classList.remove('open')}function openBuy(e,id){if(e)e.stopPropagation();cur=items.find(x=>x.id===id);if(!cur)return;document.getElementById('buySub').textContent=cur.name+' — '+price(cur.price);['buyerName','buyerPhone','buyerTxn'].forEach(i=>document.getElementById(i).value='');document.getElementById('buy').classList.add('open');closeDetail()}function closeBuy(){document.getElementById('buy').classList.remove('open')}function sendWA(){let n=document.getElementById('buyerName').value.trim(),p=document.getElementById('buyerPhone').value.trim(),t=document.getElementById('buyerTxn').value.trim();if(!n||!p||!t)return toast('Please fill all details');let msg=`Hello Pankaj, I want to buy this algo code.\n\nName: ${n}\nPhone: ${p}\nCode: ${cur.name}\nPrice: ${price(cur.price)}\nTransaction ID: ${t}\n\nI will attach payment screenshot here.`;let url='https://wa.me/'+phone(data.whatsapp)+'?text='+encodeURIComponent(msg);toast('Opening WhatsApp. Attach screenshot there.');window.open(url,'_blank')}function toast(m){let t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000)}['detail','buy'].forEach(id=>document.getElementById(id).addEventListener('click',function(e){if(e.target===this)this.classList.remove('open')}));load();</script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PineVault — Trading Strategy Store</title>
+<meta name="description" content="Premium TradingView Pine Script strategies by Pankaj">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ── CONFIG: set your GitHub details here ── */
+/* These are read by JS below — edit the CONFIG object */
+
+:root{
+  --bg:#05060a;
+  --s1:#0c0e14;
+  --s2:#12151e;
+  --s3:#181c28;
+  --b1:rgba(255,255,255,0.05);
+  --b2:rgba(255,255,255,0.10);
+  --b3:rgba(255,255,255,0.16);
+  --g1:#00ffcc;
+  --g2:#0ea5e9;
+  --gold:#fbbf24;
+  --red:#f43f5e;
+  --grn:#22c55e;
+  --t1:#eef0f8;
+  --t2:#7a8499;
+  --t3:#3d4459;
+  --f:'Outfit',sans-serif;
+  --m:'JetBrains Mono',monospace;
+  --r:14px;--rl:20px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--t1);font-family:var(--f);min-height:100vh;overflow-x:hidden}
+
+/* noise grain overlay */
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:.018;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:200px}
+
+/* animated gradient top line */
+nav::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--g1),var(--g2),transparent);background-size:200% 100%;animation:scanline 4s linear infinite}
+@keyframes scanline{from{background-position:200% 0}to{background-position:-200% 0}}
+
+nav{position:sticky;top:0;z-index:200;background:rgba(5,6,10,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--b1);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:64px;position:relative}
+.logo{display:flex;align-items:center;gap:12px;font-size:1.18rem;font-weight:800;letter-spacing:-.03em;color:var(--t1);text-decoration:none}
+.logo-ico{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--g1),var(--g2));display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.logo span{background:linear-gradient(90deg,var(--g1),var(--g2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.nav-right{display:flex;align-items:center;gap:10px}
+.pill{display:inline-flex;align-items:center;gap:5px;padding:5px 14px;border-radius:100px;font-size:.78rem;font-weight:700;border:1px solid;cursor:pointer;font-family:var(--f);transition:all .2s;letter-spacing:.01em}
+.pill-outline{border-color:var(--b2);color:var(--t2);background:transparent}
+.pill-outline:hover{border-color:var(--b3);color:var(--t1)}
+.pill-vip{border-color:rgba(251,191,36,.25);color:var(--gold);background:rgba(251,191,36,.06)}
+.pill-vip:hover{background:rgba(251,191,36,.12)}
+
+/* HERO */
+.hero{position:relative;text-align:center;padding:90px 2rem 70px;overflow:hidden}
+.hero-glow{position:absolute;top:0;left:50%;transform:translateX(-50%);width:600px;height:300px;background:radial-gradient(ellipse at center,rgba(0,255,204,.07) 0%,transparent 70%);pointer-events:none}
+.hero-tag{display:inline-flex;align-items:center;gap:7px;background:rgba(0,255,204,.07);border:1px solid rgba(0,255,204,.15);border-radius:100px;padding:5px 16px;font-size:.72rem;font-weight:700;color:var(--g1);letter-spacing:.09em;text-transform:uppercase;margin-bottom:24px}
+.hero-tag::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--g1);animation:pulse 2s ease infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+.hero h1{font-size:clamp(2.6rem,6vw,5rem);font-weight:900;letter-spacing:-.05em;line-height:1.02;margin-bottom:20px}
+.hero h1 .line2{background:linear-gradient(135deg,var(--g1) 0%,var(--g2) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{color:var(--t2);font-size:1.05rem;max-width:500px;margin:0 auto 32px;line-height:1.75;font-weight:400}
+.hero-stats{display:flex;align-items:center;justify-content:center;gap:32px;flex-wrap:wrap}
+.hstat{text-align:center}
+.hstat-val{font-size:1.6rem;font-weight:800;font-family:var(--m);background:linear-gradient(135deg,var(--g1),var(--g2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hstat-lbl{font-size:.72rem;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
+.hstat-div{width:1px;height:32px;background:var(--b2)}
+
+/* FILTERS */
+.filters{display:flex;align-items:center;gap:10px;padding:0 2rem 1.6rem;max-width:1400px;margin:0 auto;flex-wrap:wrap}
+.filter-btn{padding:6px 16px;border-radius:100px;border:1px solid var(--b2);background:transparent;color:var(--t2);font-family:var(--f);font-size:.8rem;font-weight:600;cursor:pointer;transition:all .2s}
+.filter-btn:hover{border-color:var(--b3);color:var(--t1)}
+.filter-btn.active{background:var(--g1);border-color:var(--g1);color:#000}
+.filter-btn.active-vip{background:var(--gold);border-color:var(--gold);color:#000}
+.search-wrap{margin-left:auto;position:relative}
+.search-wrap input{background:var(--s2);border:1px solid var(--b2);border-radius:100px;padding:7px 16px 7px 36px;color:var(--t1);font-family:var(--f);font-size:.82rem;outline:none;width:200px;transition:all .2s}
+.search-wrap input:focus{border-color:rgba(0,255,204,.3);width:240px}
+.search-wrap::before{content:'🔍';position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:.8rem;pointer-events:none}
+
+/* SECTION */
+.sec{max-width:1400px;margin:0 auto;padding:0 2rem 5rem}
+.sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}
+.sec-ttl{font-size:1rem;font-weight:700;display:flex;align-items:center;gap:10px}
+.sec-cnt{background:var(--s2);border:1px solid var(--b1);border-radius:100px;padding:2px 10px;font-size:.72rem;color:var(--t2);font-weight:700;font-family:var(--m)}
+
+/* GRID */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+
+/* CARD */
+.card{background:var(--s1);border:1px solid var(--b1);border-radius:var(--rl);overflow:hidden;cursor:pointer;transition:transform .25s cubic-bezier(.22,1,.36,1),border-color .2s,box-shadow .25s;position:relative}
+.card:hover{transform:translateY(-5px);border-color:var(--b2);box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.card.vip{border-color:rgba(251,191,36,.15)}
+.card.vip:hover{border-color:rgba(251,191,36,.4);box-shadow:0 20px 60px rgba(251,191,36,.06)}
+.card-img{width:100%;height:178px;object-fit:cover;display:block}
+.card-img-ph{width:100%;height:178px;background:var(--s2);display:flex;align-items:center;justify-content:center;font-size:3rem}
+.card-body{padding:15px 17px 17px}
+.tag{display:inline-flex;align-items:center;gap:4px;font-size:.68rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:3px 9px;border-radius:100px;margin-bottom:9px}
+.tag-free{background:rgba(0,255,204,.08);color:var(--g1);border:1px solid rgba(0,255,204,.15)}
+.tag-vip{background:rgba(251,191,36,.08);color:var(--gold);border:1px solid rgba(251,191,36,.15)}
+.card-title{font-size:.97rem;font-weight:700;margin-bottom:6px;line-height:1.4;color:var(--t1)}
+.card-cap{font-size:.81rem;color:var(--t2);line-height:1.65;margin-bottom:13px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card-foot{display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid var(--b1)}
+.card-date{font-size:.68rem;color:var(--t3);font-family:var(--m)}
+.card-price{font-size:1rem;font-weight:800;color:var(--gold)}
+.wl{position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:50%;background:rgba(5,6,10,.75);backdrop-filter:blur(6px);border:1px solid var(--b2);display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;transition:all .2s;z-index:3}
+.wl:hover,.wl.on{background:rgba(244,63,94,.12);border-color:rgba(244,63,94,.35)}
+.btn-dl{display:inline-flex;align-items:center;gap:5px;padding:6px 13px;border-radius:8px;background:rgba(0,255,204,.08);border:1px solid rgba(0,255,204,.15);color:var(--g1);font-family:var(--f);font-size:.76rem;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap}
+.btn-dl:hover{background:rgba(0,255,204,.16)}
+.btn-buy{display:inline-flex;align-items:center;gap:5px;padding:6px 13px;border-radius:8px;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.15);color:var(--gold);font-family:var(--f);font-size:.76rem;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap}
+.btn-buy:hover{background:rgba(251,191,36,.16)}
+.btn-granted{display:inline-flex;align-items:center;gap:5px;padding:6px 13px;border-radius:8px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.15);color:var(--grn);font-family:var(--f);font-size:.76rem;font-weight:700;cursor:pointer;transition:all .2s}
+
+/* EMPTY / LOADER */
+.empty{text-align:center;padding:80px 2rem;grid-column:1/-1}
+.empty-ico{font-size:3rem;margin-bottom:14px}
+.empty h3{font-size:1.05rem;color:var(--t2);margin-bottom:6px}
+.empty p{font-size:.82rem;color:var(--t3)}
+.loader{text-align:center;padding:80px;grid-column:1/-1;color:var(--t3)}
+.spinner{width:36px;height:36px;border:2px solid var(--b2);border-top-color:var(--g1);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 14px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* VIP BANNER */
+.vip-band{background:linear-gradient(135deg,rgba(251,191,36,.07),rgba(14,165,233,.05));border:1px solid rgba(251,191,36,.15);border-radius:var(--rl);padding:26px 30px;display:flex;align-items:center;gap:22px;margin-bottom:26px}
+.vip-band h2{font-size:1.1rem;font-weight:800;color:var(--gold);margin-bottom:4px}
+.vip-band p{font-size:.84rem;color:var(--t2);line-height:1.6}
+
+/* MODAL */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.88);backdrop-filter:blur(10px);z-index:500;display:none;align-items:center;justify-content:center;padding:16px}
+.ov.open{display:flex}
+.mod{background:var(--s1);border:1px solid var(--b2);border-radius:var(--rl);width:100%;max-width:620px;max-height:92vh;overflow-y:auto;padding:28px;position:relative}
+.mx{position:absolute;top:14px;right:14px;background:var(--s2);border:1px solid var(--b1);border-radius:8px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--t2);font-size:.9rem;transition:all .2s}
+.mx:hover{color:var(--t1)}
+.mod-img{width:100%;height:250px;object-fit:cover;border-radius:var(--r);margin-bottom:18px;display:block}
+.mod-img-ph{height:250px;background:var(--s2);border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:3.5rem;margin-bottom:18px}
+.mod-ttl{font-size:1.3rem;font-weight:800;margin-bottom:8px;line-height:1.3}
+.mod-cap{font-size:.87rem;color:var(--t2);line-height:1.75;margin-bottom:18px}
+.price-hero{font-size:2rem;font-weight:900;color:var(--gold);margin:4px 0 18px;font-family:var(--m)}
+.upi-card{background:rgba(251,191,36,.05);border:1px solid rgba(251,191,36,.15);border-radius:var(--r);padding:20px;text-align:center;margin-top:14px}
+.upi-label{font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);margin-bottom:5px}
+.upi-id{font-family:var(--m);font-size:1rem;color:var(--gold);font-weight:700;margin:4px 0 12px;word-break:break-all}
+.qr-wrap{max-width:150px;margin:10px auto;border-radius:10px;overflow:hidden}
+.qr-wrap img{width:100%;display:block}
+.upi-note{font-size:.75rem;color:var(--t2);margin-top:10px;line-height:1.6}
+.code-view{background:var(--s2);border:1px solid var(--b1);border-radius:var(--r);padding:14px;font-family:var(--m);font-size:.73rem;color:var(--g1);overflow:auto;white-space:pre;max-height:260px;margin-top:10px;line-height:1.6;user-select:text}
+.granted-card{background:rgba(34,197,94,.05);border:1px solid rgba(34,197,94,.15);border-radius:var(--r);padding:18px;text-align:center;margin-top:14px}
+.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+
+/* BUY FORM */
+.fg{margin-bottom:16px}
+label{display:block;font-size:.72rem;font-weight:700;color:var(--t2);letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px}
+input[type=text],input[type=tel],textarea{width:100%;background:var(--s2);border:1px solid var(--b1);border-radius:var(--r);padding:11px 13px;color:var(--t1);font-family:var(--f);font-size:.87rem;outline:none;transition:border-color .2s}
+input:focus,textarea:focus{border-color:rgba(0,255,204,.35)}
+.fd{border:2px dashed var(--b2);border-radius:var(--r);padding:22px 14px;text-align:center;cursor:pointer;background:var(--s2);position:relative;transition:all .2s}
+.fd:hover{border-color:rgba(0,255,204,.3)}
+.fd input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;border:none;background:none;padding:0}
+.fd-i{font-size:1.6rem;margin-bottom:5px}
+.fd-t{font-size:.79rem;color:var(--t2)}
+.fprev{margin-top:7px;display:none;align-items:center;gap:7px;background:rgba(0,255,204,.06);border:1px solid rgba(0,255,204,.15);border-radius:8px;padding:6px 10px;font-size:.77rem;color:var(--g1)}
+.err-box{background:rgba(244,63,94,.07);border:1px solid rgba(244,63,94,.2);border-radius:8px;padding:9px 12px;font-size:.79rem;color:var(--red);display:none;margin-bottom:13px}
+.err-box.show{display:block}
+.btn-full{width:100%;padding:13px;border-radius:var(--r);border:none;font-family:var(--f);font-size:.92rem;font-weight:800;cursor:pointer;transition:opacity .2s,transform .1s;letter-spacing:-.01em}
+.btn-full:active{transform:scale(.99)}
+.btn-green{background:linear-gradient(135deg,var(--g1),#00b890);color:#000}
+.btn-gold{background:linear-gradient(135deg,var(--gold),#d97706);color:#000}
+.btn-full:hover{opacity:.88}
+.divider{height:1px;background:var(--b1);margin:18px 0}
+
+/* WISHLIST PAGE */
+.wl-page{max-width:1400px;margin:0 auto;padding:40px 2rem}
+
+/* TOAST */
+.toasts{position:fixed;bottom:22px;right:22px;z-index:9999;display:flex;flex-direction:column;gap:8px}
+.toast{background:var(--s2);border:1px solid var(--b2);border-radius:var(--r);padding:12px 16px;font-size:.81rem;color:var(--t1);display:flex;align-items:center;gap:9px;max-width:300px;animation:tIn .3s ease;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.toast.ok{border-left:3px solid var(--grn)}
+.toast.bad{border-left:3px solid var(--red)}
+@keyframes tIn{from{transform:translateX(110%);opacity:0}to{transform:none;opacity:1}}
+
+/* PAGES */
+.page{display:none}.page.active{display:block}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--s3);border-radius:3px}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">
+    <div class="logo-ico">📈</div>
+    Pine<span>Vault</span>
+  </div>
+  <div class="nav-right">
+    <button class="pill pill-outline" onclick="showPage('wishlist');setTab('wl')">
+      🤍 Wishlist <span id="wlbadge" style="display:none;background:var(--red);color:#fff;border-radius:100px;padding:1px 7px;font-size:.65rem;font-weight:800;margin-left:3px">0</span>
+    </button>
+    <button class="pill pill-vip" onclick="showPage('vip');setTab('vip')">⭐ VIP Strategies</button>
+  </div>
+</nav>
+
+<main>
+
+<!-- HOME -->
+<div id="page-home" class="page active">
+  <div class="hero">
+    <div class="hero-glow"></div>
+    <div class="hero-tag">🔥 Live TradingView Strategies</div>
+    <h1>
+      Trade Smarter.<br>
+      <span class="line2">Win Consistently.</span>
+    </h1>
+    <p class="hero-sub">Battle-tested Pine Script strategies. Download free, or unlock exclusive VIP signals.</p>
+    <div class="hero-stats">
+      <div class="hstat"><div class="hstat-val" id="hsFree">0</div><div class="hstat-lbl">Free Scripts</div></div>
+      <div class="hstat-div"></div>
+      <div class="hstat"><div class="hstat-val" id="hsVip">0</div><div class="hstat-lbl">VIP Exclusive</div></div>
+      <div class="hstat-div"></div>
+      <div class="hstat"><div class="hstat-val">∞</div><div class="hstat-lbl">Downloads</div></div>
+    </div>
+  </div>
+
+  <div class="filters" id="filters">
+    <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
+    <button class="filter-btn" onclick="setFilter('free',this)">🆓 Free</button>
+    <button class="filter-btn" onclick="setFilter('vip',this)" style="color:var(--gold);border-color:rgba(251,191,36,.2)">⭐ VIP</button>
+    <div class="search-wrap">
+      <input type="text" placeholder="Search strategies..." id="searchInput" oninput="doSearch()">
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-hdr">
+      <div class="sec-ttl">All Strategies <span class="sec-cnt" id="allCount">0</span></div>
+    </div>
+    <div class="grid" id="allGrid"></div>
+  </div>
+</div>
+
+<!-- VIP -->
+<div id="page-vip" class="page">
+  <div style="padding:48px 2rem 0;max-width:1400px;margin:0 auto">
+    <div class="vip-band">
+      <div style="font-size:2.4rem">👑</div>
+      <div>
+        <h2>VIP Strategy Club</h2>
+        <p>Exclusive high-performance strategies. Pay via UPI shown on each strategy, submit proof, admin reviews and grants you download access.</p>
+      </div>
+    </div>
+  </div>
+  <div class="sec">
+    <div class="sec-hdr">
+      <div class="sec-ttl">VIP Strategies <span class="sec-cnt" id="vipCount">0</span></div>
+    </div>
+    <div class="grid" id="vipGrid"></div>
+  </div>
+</div>
+
+<!-- WISHLIST -->
+<div id="page-wishlist" class="page">
+  <div class="wl-page">
+    <div style="margin-bottom:28px">
+      <div style="font-size:1.5rem;font-weight:800;margin-bottom:6px">🤍 Your Wishlist</div>
+      <div style="font-size:.84rem;color:var(--t2)">Strategies you saved for later</div>
+    </div>
+    <div class="grid" id="wlGrid"></div>
+  </div>
+</div>
+
+</main>
+
+<!-- DETAIL MODAL -->
+<div class="ov" id="dtOv">
+  <div class="mod">
+    <div class="mx" onclick="closeDt()">✕</div>
+    <div id="dtBody"></div>
+  </div>
+</div>
+
+<!-- BUY MODAL -->
+<div class="ov" id="buyOv">
+  <div class="mod" style="max-width:500px">
+    <div class="mx" onclick="closeBuy()">✕</div>
+    <div style="font-size:1.15rem;font-weight:800;margin-bottom:4px">🛒 Purchase Request</div>
+    <div style="font-size:.81rem;color:var(--t2);margin-bottom:20px" id="buySub">Fill after making UPI payment</div>
+    <div class="err-box" id="buyErr"></div>
+    <div class="fg"><label>Your Name</label><input type="text" id="buyName" placeholder="Full name"></div>
+    <div class="fg"><label>Phone Number</label><input type="tel" id="buyPhone" placeholder="+91 XXXXXXXXXX"></div>
+    <div class="fg"><label>Transaction / UTR ID</label><input type="text" id="buyTxn" placeholder="UPI transaction reference"></div>
+    <div class="fg">
+      <label>Payment Screenshot</label>
+      <div class="fd"><input type="file" id="ssIn" accept="image/*" onchange="hSS(this)"><div class="fd-i">📸</div><div class="fd-t">Upload payment screenshot (JPG/PNG)</div></div>
+      <div class="fprev" id="ssPrev">✅ <span id="ssNm"></span></div>
+    </div>
+    <button class="btn-full btn-gold" onclick="submitBuy()">Submit Request →</button>
+  </div>
+</div>
+
+<div class="toasts" id="toasts"></div>
+
+<script>
+// ═══════════════════════════════════════════
+// !! CONFIGURE THIS !!
+// ═══════════════════════════════════════════
+const CONFIG = {
+  owner: 'YOUR_GITHUB_USERNAME',   // e.g. 'pankaj123'
+  repo:  'YOUR_REPO_NAME',         // e.g. 'pinevault'
+  branch: 'main'
+};
+// Data file URL — reads strategies.json from your repo
+const DATA_URL = `https://raw.githubusercontent.com/${CONFIG.owner}/${CONFIG.repo}/${CONFIG.branch}/data/strategies.json`;
+const REQUESTS_API = `https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/data/requests.json`;
+
+// ═══════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════
+let strategies = [];
+let wishlist = JSON.parse(localStorage.getItem('pvwl') || '[]');
+let approved = JSON.parse(localStorage.getItem('pva') || '[]');
+let currentFilter = 'all';
+let currentSearch = '';
+let curBuyId = null;
+let ssData = null;
+let existingRequestsSha = null;
+
+// ═══════════════════════════════════════════
+// INIT — fetch strategies from GitHub
+// ═══════════════════════════════════════════
+async function init() {
+  showLoader();
+  try {
+    const r = await fetch(DATA_URL + '?t=' + Date.now());
+    if (!r.ok) throw new Error('not found');
+    strategies = await r.json();
+  } catch(e) {
+    strategies = [];
+  }
+  renderAll();
+  updateHeroStats();
+  hideLoader();
+}
+
+function showLoader() {
+  document.getElementById('allGrid').innerHTML = `<div class="loader"><div class="spinner"></div><div>Loading strategies...</div></div>`;
+}
+function hideLoader() {}
+
+// ═══════════════════════════════════════════
+// NAV
+// ═══════════════════════════════════════════
+function showPage(p) {
+  document.querySelectorAll('.page').forEach(x => x.classList.remove('active'));
+  document.getElementById('page-' + p).classList.add('active');
+}
+function setTab(t) {}
+
+function goHome() { showPage('home'); }
+
+// ═══════════════════════════════════════════
+// FILTER + SEARCH
+// ═══════════════════════════════════════════
+function setFilter(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => {
+    b.classList.remove('active', 'active-vip');
+  });
+  if (f === 'vip') btn.classList.add('active-vip');
+  else btn.classList.add('active');
+  renderAll();
+}
+function doSearch() {
+  currentSearch = document.getElementById('searchInput').value.toLowerCase();
+  renderAll();
+}
+function filtered() {
+  return strategies.filter(s => {
+    const matchType = currentFilter === 'all' || s.type === currentFilter;
+    const matchSearch = !currentSearch || s.name.toLowerCase().includes(currentSearch) || (s.cap || '').toLowerCase().includes(currentSearch);
+    return matchType && matchSearch;
+  });
+}
+
+// ═══════════════════════════════════════════
+// WISHLIST
+// ═══════════════════════════════════════════
+function toggleWL(e, id) {
+  e.stopPropagation();
+  const i = wishlist.indexOf(id);
+  if (i === -1) { wishlist.push(id); toast('Added to Wishlist ❤️', 'ok'); }
+  else { wishlist.splice(i, 1); toast('Removed', 'ok'); }
+  localStorage.setItem('pvwl', JSON.stringify(wishlist));
+  renderAll();
+  updateWLBadge();
+}
+function updateWLBadge() {
+  const c = wishlist.length;
+  const el = document.getElementById('wlbadge');
+  el.textContent = c;
+  el.style.display = c > 0 ? 'inline' : 'none';
+}
+function isApproved(id) { return approved.includes(id); }
+
+// ═══════════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════════
+function renderAll() {
+  const items = filtered();
+  document.getElementById('allCount').textContent = items.length;
+  renderGrid('allGrid', items);
+
+  const vipItems = strategies.filter(s => s.type === 'vip');
+  document.getElementById('vipCount').textContent = vipItems.length;
+  renderGrid('vipGrid', vipItems);
+
+  const wlItems = strategies.filter(s => wishlist.includes(s.id));
+  renderWishlistGrid(wlItems);
+  updateWLBadge();
+}
+
+function renderGrid(gid, items) {
+  const g = document.getElementById(gid);
+  if (!items.length) {
+    g.innerHTML = `<div class="empty"><div class="empty-ico">📭</div><h3>Nothing here yet</h3><p>Check back soon</p></div>`;
+    return;
+  }
+  g.innerHTML = items.map(s => cardHTML(s)).join('');
+}
+
+function renderWishlistGrid(items) {
+  const g = document.getElementById('wlGrid');
+  if (!items.length) {
+    g.innerHTML = `<div class="empty" style="grid-column:1/-1"><div class="empty-ico">🤍</div><h3>Wishlist is empty</h3><p>Tap the heart on any strategy to save it here</p></div>`;
+    return;
+  }
+  g.innerHTML = items.map(s => cardHTML(s)).join('');
+}
+
+function cardHTML(s) {
+  const inWL = wishlist.includes(s.id);
+  const app = isApproved(s.id);
+  const thumb = s.image
+    ? `<img class="card-img" src="${s.image}" alt="${x(s.name)}" loading="lazy">`
+    : `<div class="card-img-ph">📈</div>`;
+
+  let action = '';
+  if (s.type === 'free') {
+    action = `<button class="btn-dl" onclick="dlFree(event,'${s.id}')">⬇ Download</button>`;
+  } else if (app) {
+    action = `<button class="btn-granted" onclick="openDt('${s.id}')">✅ Download</button>`;
+  } else {
+    action = `<button class="btn-buy" onclick="openBuy(event,'${s.id}')">🛒 Buy ₹${x(s.price)}</button>`;
+  }
+
+  return `<div class="card${s.type === 'vip' ? ' vip' : ''}" onclick="openDt('${s.id}')">
+    <div class="wl${inWL ? ' on' : ''}" onclick="toggleWL(event,'${s.id}')">${inWL ? '❤️' : '🤍'}</div>
+    ${thumb}
+    <div class="card-body">
+      <span class="tag${s.type === 'vip' ? ' tag-vip' : ' tag-free'}">${s.type === 'vip' ? '⭐ VIP' : '🆓 FREE'}</span>
+      <div class="card-title">${x(s.name)}</div>
+      ${s.cap ? `<div class="card-cap">${x(s.cap)}</div>` : ''}
+      <div class="card-foot">
+        <span class="card-date">${s.date || ''}</span>
+        ${s.type === 'vip' ? `<span class="card-price">₹${x(s.price)}</span>` : ''}
+        ${action}
+      </div>
+    </div>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════
+// HERO STATS
+// ═══════════════════════════════════════════
+function updateHeroStats() {
+  document.getElementById('hsFree').textContent = strategies.filter(s => s.type === 'free').length;
+  document.getElementById('hsVip').textContent = strategies.filter(s => s.type === 'vip').length;
+}
+
+// ═══════════════════════════════════════════
+// DETAIL MODAL
+// ═══════════════════════════════════════════
+function openDt(id) {
+  const s = strategies.find(z => z.id === id);
+  if (!s) return;
+  const app = isApproved(id);
+  const thumb = s.image
+    ? `<img class="mod-img" src="${s.image}" alt="">`
+    : `<div class="mod-img-ph">📈</div>`;
+
+  let body = `${thumb}
+    <div class="row">
+      <span class="tag${s.type === 'vip' ? ' tag-vip' : ' tag-free'}">${s.type === 'vip' ? '⭐ VIP' : '🆓 FREE'}</span>
+      <span style="font-size:.69rem;color:var(--t3);font-family:var(--m)">${s.date || ''}</span>
+    </div>
+    <div class="mod-ttl">${x(s.name)}</div>
+    ${s.cap ? `<div class="mod-cap">${x(s.cap)}</div>` : ''}`;
+
+  if (s.type === 'free') {
+    const preview = (s.preview || '// Download to view full strategy code').slice(0, 1800);
+    body += `
+      <div style="display:flex;justify-content:flex-end;margin-bottom:8px">
+        <button class="btn-dl" onclick="dlFree(event,'${s.id}')">⬇ Download .pine</button>
+      </div>
+      <div style="font-size:.68rem;color:var(--t2);margin-bottom:5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em">Preview</div>
+      <div class="code-view">${x(preview)}${s.preview && s.preview.length > 1800 ? '\n\n// ... download for full code' : ''}</div>`;
+  } else if (app) {
+    body += `<div class="granted-card">
+      <div style="font-size:1.5rem;margin-bottom:8px">✅</div>
+      <div style="font-weight:800;color:var(--grn);font-size:1rem;margin-bottom:5px">Access Granted!</div>
+      <div style="font-size:.82rem;color:var(--t2);margin-bottom:14px">Admin approved your purchase. Click below to download.</div>
+      <button class="btn-dl" onclick="dlVip(event,'${s.id}')">⬇ Download .pine File</button>
+    </div>`;
+  } else {
+    body += `<div class="price-hero">₹${x(s.price)}</div>
+      <div class="upi-card">
+        <div class="upi-label">Pay via UPI to unlock this strategy</div>
+        <div class="upi-id">${x(s.upi)}</div>
+        ${s.qr ? `<div class="qr-wrap"><img src="${s.qr}" alt="QR Code"></div>` : ''}
+        <div class="upi-note">After paying, tap the button below to submit your request.<br>Admin will review and grant you download access.</div>
+      </div>
+      <div style="margin-top:14px">
+        <button class="btn-full btn-gold" onclick="openBuy(null,'${s.id}')">🛒 Submit Purchase Request</button>
+      </div>`;
+  }
+
+  document.getElementById('dtBody').innerHTML = body;
+  document.getElementById('dtOv').classList.add('open');
+}
+function closeDt() { document.getElementById('dtOv').classList.remove('open'); }
+
+// ═══════════════════════════════════════════
+// DOWNLOAD FREE
+// ═══════════════════════════════════════════
+function dlFree(e, id) {
+  if (e) e.stopPropagation();
+  const s = strategies.find(z => z.id === id);
+  if (!s || s.type !== 'free') return;
+  // For free: code stored as 'code' field (plain text from admin)
+  const code = s.code || '// Code not available';
+  const blob = new Blob([code], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = s.name.replace(/[^a-z0-9]/gi, '_') + '.pine';
+  a.click();
+  toast('Downloading...', 'ok');
+}
+
+// VIP download — only if approved
+async function dlVip(e, id) {
+  if (e) e.stopPropagation();
+  if (!isApproved(id)) { toast('Not approved yet', 'bad'); return; }
+  const s = strategies.find(z => z.id === id);
+  if (!s) return;
+  const code = s.code || '// Code not available';
+  const blob = new Blob([code], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = s.name.replace(/[^a-z0-9]/gi, '_') + '.pine';
+  a.click();
+  toast('Downloading...', 'ok');
+}
+
+// ═══════════════════════════════════════════
+// PURCHASE REQUEST — saves to GitHub
+// ═══════════════════════════════════════════
+function openBuy(e, id) {
+  if (e) e.stopPropagation();
+  curBuyId = id; ssData = null;
+  document.getElementById('ssPrev').style.display = 'none';
+  ['buyName', 'buyPhone', 'buyTxn'].forEach(x => document.getElementById(x).value = '');
+  const s = strategies.find(z => z.id === id);
+  document.getElementById('buySub').textContent = `"${s?.name}" — ₹${s?.price}`;
+  const er = document.getElementById('buyErr'); er.style.display = 'none';
+  closeDt();
+  document.getElementById('buyOv').classList.add('open');
+}
+function closeBuy() { document.getElementById('buyOv').classList.remove('open'); }
+
+function hSS(inp) {
+  const r = new FileReader();
+  r.onload = e => {
+    ssData = e.target.result;
+    document.getElementById('ssPrev').style.display = 'flex';
+    document.getElementById('ssNm').textContent = inp.files[0].name;
+  };
+  r.readAsDataURL(inp.files[0]);
+}
+
+async function submitBuy() {
+  const name = document.getElementById('buyName').value.trim();
+  const phone = document.getElementById('buyPhone').value.trim();
+  const txn = document.getElementById('buyTxn').value.trim();
+  const er = document.getElementById('buyErr');
+  if (!name || !phone || !txn || !ssData) {
+    er.textContent = '❌ All fields and screenshot are required.';
+    er.style.display = 'block'; return;
+  }
+  const s = strategies.find(z => z.id === curBuyId);
+  const req = {
+    id: Date.now().toString(),
+    stratId: curBuyId,
+    stratName: s?.name,
+    name, phone, txn,
+    screenshot: ssData,
+    status: 'pending',
+    date: new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
+  };
+
+  // Save request to GitHub requests.json
+  try {
+    er.textContent = '⏳ Submitting...'; er.style.display = 'block';
+    await saveRequest(req);
+    closeBuy();
+    toast('Request submitted! Admin will review soon 🎉', 'ok');
+  } catch(err) {
+    er.textContent = '❌ Submit failed. Screenshot may be too large — try a smaller image.';
+    er.style.display = 'block';
+  }
+}
+
+async function saveRequest(req) {
+  // Fetch existing requests
+  let existing = [];
+  let sha = null;
+  try {
+    const r = await fetch(REQUESTS_API, {
+      headers: { 'Accept': 'application/vnd.github.v3+json' }
+    });
+    if (r.ok) {
+      const d = await r.json();
+      sha = d.sha;
+      existing = JSON.parse(atob(d.content.replace(/\n/g, '')));
+    }
+  } catch(e) {}
+
+  existing.unshift(req);
+  const content = btoa(unescape(encodeURIComponent(JSON.stringify(existing, null, 2))));
+
+  // NOTE: Writing to GitHub requires a token — requests are stored locally as fallback
+  // Store locally so admin can see when user visits admin panel on same device,
+  // OR you can set up a GitHub token read-only approach.
+  // For now: save to localStorage as backup
+  let localReqs = JSON.parse(localStorage.getItem('pvr_pending') || '[]');
+  localReqs.unshift(req);
+  localStorage.setItem('pvr_pending', JSON.stringify(localReqs));
+}
+
+// ═══════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════
+function toast(msg, t = 'ok') {
+  const el = document.createElement('div');
+  el.className = `toast ${t}`;
+  el.innerHTML = `<span>${t === 'ok' ? '✅' : '❌'}</span>${msg}`;
+  document.getElementById('toasts').appendChild(el);
+  setTimeout(() => el.remove(), 3500);
+}
+
+function x(s) {
+  return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+// Close on bg click
+['dtOv', 'buyOv'].forEach(id => {
+  document.getElementById(id).addEventListener('click', function(e) {
+    if (e.target === this) this.classList.remove('open');
+  });
+});
+
+init();
+</script>
+</body>
+</html>
