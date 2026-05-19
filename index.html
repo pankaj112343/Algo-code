@@ -8,24 +8,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0a0b0f;
-    --surface: #111318;
-    --surface2: #181c24;
-    --surface3: #1e2330;
-    --border: rgba(255,255,255,0.07);
-    --border-strong: rgba(255,255,255,0.14);
-    --accent: #00d4aa;
-    --accent2: #7c6af7;
-    --accent-vip: #f5a623;
-    --text: #e8eaf0;
-    --text2: #8a8fa8;
-    --text3: #555b75;
-    --danger: #ff4d6d;
-    --success: #00d4aa;
-    --font: 'Space Grotesk', sans-serif;
-    --mono: 'JetBrains Mono', monospace;
-    --radius: 12px;
-    --radius-lg: 18px;
+    --bg: #0a0b0f; --surface: #111318; --surface2: #181c24; --surface3: #1e2330;
+    --border: rgba(255,255,255,0.07); --border-strong: rgba(255,255,255,0.14);
+    --accent: #00d4aa; --accent2: #7c6af7; --accent-vip: #f5a623;
+    --text: #e8eaf0; --text2: #8a8fa8; --text3: #555b75;
+    --danger: #ff4d6d; --success: #00d4aa;
+    --font: 'Space Grotesk', sans-serif; --mono: 'JetBrains Mono', monospace;
+    --radius: 12px; --radius-lg: 18px;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100vh; overflow-x: hidden; }
@@ -125,10 +114,13 @@
   ::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 3px; }
   .file-drop { border: 2px dashed var(--border-strong); border-radius: var(--radius); padding: 28px 20px; text-align: center; cursor: pointer; transition: all 0.2s; background: var(--surface2); position: relative; }
   .file-drop input[type="file"] { position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; background: transparent; border: none; padding: 0; }
+  .loading-bar { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg,var(--accent),var(--accent2)); z-index: 9999; transition: width 0.3s; width: 0; }
   @media(max-width:640px) { .two-col { grid-template-columns: 1fr; } .vip-banner { flex-direction: column; text-align: center; } .nav-tabs { overflow-x: auto; max-width: 70vw; } .nav-tab { white-space: nowrap; padding: 6px 10px; } .modal { padding: 24px 18px; } }
 </style>
 </head>
 <body>
+
+<div class="loading-bar" id="loadingBar"></div>
 
 <!-- NAV -->
 <nav>
@@ -157,7 +149,7 @@
   <div class="section-header">
     <div class="section-title">All Strategies <span class="count-badge" id="homeCount">0</span></div>
   </div>
-  <div class="strategy-grid" id="homeGrid"></div>
+  <div class="strategy-grid" id="homeGrid"><div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">⏳</div><h3>Loading strategies…</h3></div></div>
 </div>
 
 <!-- VIP PAGE -->
@@ -215,21 +207,65 @@
 <div class="toast-container" id="toastContainer"></div>
 
 <script>
-// ── HOW THIS WORKS ──
-// Admin saves data to localStorage via admin.html (opened only by you, locally).
-// This public store reads that same localStorage — same browser = same data.
-// Pine script code for VIP strategies is NEVER stored here; only a download token
-// is stored. When admin approves a request, the public store shows a contact note.
-// Free strategy code IS stored and shown (as intended).
+// ════════════════════════════════════════════════
+//  JSONBIN CONFIG — shared cloud storage
+// ════════════════════════════════════════════════
+const BIN_ID  = '6a0be9676610dd3ae86aa9a0';
+const API_KEY = '$2a$10$Plp0mbu0EX8HaPCAmx2rouVjVcrRGBo9DGa8VNQiH0MdtKT0FF8mO';
+const BIN_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
 
+// ════════════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════════════
 let strategies = [];
 let paymentRequests = [];
-let wishlist = JSON.parse(localStorage.getItem('pv_wishlist') || '[]');
+let wishlist = JSON.parse(localStorage.getItem('pv_wishlist') || '[]'); // wishlist stays local (per user)
 let payShotData = null;
 
-function loadData() {
-  strategies = JSON.parse(localStorage.getItem('pv_strategies') || '[]');
-  paymentRequests = JSON.parse(localStorage.getItem('pv_payment_requests') || '[]');
+// ── LOADING BAR ──
+function setLoading(pct) {
+  document.getElementById('loadingBar').style.width = pct + '%';
+  if (pct >= 100) setTimeout(() => { document.getElementById('loadingBar').style.width = '0'; }, 400);
+}
+
+// ── JSONBIN READ ──
+async function loadData() {
+  setLoading(20);
+  try {
+    const res = await fetch(BIN_URL + '/latest', {
+      headers: { 'X-Master-Key': API_KEY }
+    });
+    if (!res.ok) throw new Error('Fetch failed: ' + res.status);
+    const json = await res.json();
+    const data = json.record || {};
+    strategies       = data.strategies        || [];
+    paymentRequests  = data.paymentRequests   || [];
+    setLoading(100);
+    return true;
+  } catch(e) {
+    setLoading(100);
+    toast('Could not load data. Check your connection.', 'error');
+    return false;
+  }
+}
+
+// ── JSONBIN WRITE (used only by payment request submission) ──
+async function saveData() {
+  try {
+    const res = await fetch(BIN_URL, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Master-Key': API_KEY
+      },
+      body: JSON.stringify({ strategies, paymentRequests })
+    });
+    if (!res.ok) throw new Error('Save failed: ' + res.status);
+    return true;
+  } catch(e) {
+    toast('Failed to save. Please try again.', 'error');
+    return false;
+  }
 }
 
 // ── NAV ──
@@ -244,7 +280,6 @@ function setTab(el) {
 
 // ── RENDER ──
 function renderAll() {
-  loadData();
   renderGrid('homeGrid', strategies.filter(s => s.type === 'free'), 'homeCount');
   renderGrid('vipGrid', strategies.filter(s => s.type === 'vip'), 'vipCount');
   renderWishlist();
@@ -252,7 +287,7 @@ function renderAll() {
 
 function renderGrid(containerId, items, countId) {
   const container = document.getElementById(containerId);
-  const countEl = document.getElementById(countId);
+  const countEl   = document.getElementById(countId);
   countEl.textContent = items.length;
   if (items.length === 0) {
     container.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">📭</div><h3>No strategies yet</h3><p style="font-size:0.82rem;color:var(--text3);margin-top:4px">Check back soon</p></div>`;
@@ -263,8 +298,8 @@ function renderGrid(containerId, items, countId) {
 
 function cardHTML(s) {
   const thumbHTML = s.image ? `<img class="card-thumb" src="${s.image}" alt="${s.name}">` : `<div class="card-thumb-placeholder">📈</div>`;
-  const wished = wishlist.includes(s.id);
-  const footer = s.type === 'vip'
+  const wished    = wishlist.includes(s.id);
+  const footer    = s.type === 'vip'
     ? `<span class="card-date">${s.date}</span><span class="card-price">₹${s.price}</span>`
     : `<span class="card-date">${s.date}</span><a class="btn-download" onclick="downloadFreeCode(event,'${s.id}')">⬇ Download</a>`;
   return `<div class="card ${s.type==='vip'?'vip-card':''}" onclick="openDetail('${s.id}')">
@@ -288,7 +323,7 @@ function toggleWishlist(e, id) {
 }
 
 function renderWishlist() {
-  const items = strategies.filter(s => wishlist.includes(s.id));
+  const items     = strategies.filter(s => wishlist.includes(s.id));
   const container = document.getElementById('wishlistGrid');
   if (!container) return;
   if (items.length === 0) {
@@ -299,25 +334,21 @@ function renderWishlist() {
 }
 
 // ── FREE DOWNLOAD ──
-// Free strategies store code openly (that's the point — they're free)
 function downloadFreeCode(e, id) {
   e.stopPropagation();
   const s = strategies.find(x => x.id === id);
   if (!s || s.type !== 'free') return;
   const blob = new Blob([s.code], { type: 'text/plain' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = URL.createObjectURL(blob);
   a.download = s.name.replace(/[^a-z0-9]/gi, '_') + '.pine';
   a.click();
   toast('Downloading strategy...', 'success');
 }
 
 // ── VIP APPROVED DOWNLOAD ──
-// VIP code is delivered via a secret link stored only in admin.html
-// When approved, the request stores a deliveryLink set by admin
 function downloadApprovedVip(e, requestId) {
   e.stopPropagation();
-  loadData();
   const r = paymentRequests.find(x => x.id === requestId && x.status === 'approved');
   if (!r) { toast('Access not found or not yet approved', 'error'); return; }
   if (r.deliveryLink) {
@@ -330,7 +361,6 @@ function downloadApprovedVip(e, requestId) {
 
 // ── DETAIL MODAL ──
 function openDetail(id) {
-  loadData();
   const s = strategies.find(x => x.id === id);
   if (!s) return;
   const thumbHTML = s.image
@@ -378,7 +408,6 @@ function openDetail(id) {
       </div>
     `;
   } else {
-    // FREE: show code preview (free = intentionally public)
     const preview = s.code ? (s.code.slice(0, 2000) + (s.code.length > 2000 ? '\n\n... (truncated, download for full)' : '')) : '';
     content += `
       <div style="display:flex;justify-content:flex-end;margin-bottom:8px;">
@@ -405,14 +434,14 @@ function handlePaymentShot(input) {
   reader.readAsDataURL(file);
 }
 
-function submitPaymentRequest(strategyId) {
-  loadData();
+async function submitPaymentRequest(strategyId) {
   const s = strategies.find(x => x.id === strategyId); if (!s) return;
-  const name = document.getElementById('payName').value.trim();
-  const phone = document.getElementById('payPhone').value.trim();
+  const name   = document.getElementById('payName').value.trim();
+  const phone  = document.getElementById('payPhone').value.trim();
   const amount = document.getElementById('payAmount').value.trim();
-  const txn = document.getElementById('payTxn').value.trim();
+  const txn    = document.getElementById('payTxn').value.trim();
   if (!name || !phone || !amount || !txn) { toast('Fill name, phone, amount and transaction ID', 'error'); return; }
+
   const req = {
     id: Date.now().toString(),
     strategyId, strategyName: s.name,
@@ -422,24 +451,27 @@ function submitPaymentRequest(strategyId) {
     deliveryLink: null,
     date: new Date().toLocaleString('en-IN')
   };
+
   paymentRequests.unshift(req);
-  localStorage.setItem('pv_payment_requests', JSON.stringify(paymentRequests));
+  const ok = await saveData();
+  if (!ok) { paymentRequests.shift(); return; } // rollback on failure
   payShotData = null;
   closeDetailModal();
   toast('Request submitted. Wait for admin approval ✅', 'success');
 }
 
 // ── MY ACCESS ──
-function renderMyAccess() {
-  loadData();
+async function renderMyAccess() {
   const phoneEl = document.getElementById('accessPhone');
-  const c = document.getElementById('downloadsGrid');
+  const c       = document.getElementById('downloadsGrid');
   if (!c) return;
   const phone = phoneEl.value.trim();
   if (!phone) {
     c.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">🔎</div><h3>Enter phone number</h3><p style="font-size:0.82rem;color:var(--text3);margin-top:4px">Use the same phone number submitted after payment.</p></div>`;
     return;
   }
+  // Reload fresh data before checking
+  await loadData();
   const approved = paymentRequests.filter(r => r.phone === phone && r.status === 'approved');
   if (approved.length === 0) {
     c.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">⏳</div><h3>No approved downloads yet</h3><p style="font-size:0.82rem;color:var(--text3);margin-top:4px">Your request may still be pending.</p></div>`;
@@ -477,8 +509,10 @@ function escHtml(str) {
 }
 
 // ── INIT ──
-renderAll();
-renderMyAccess();
+(async () => {
+  await loadData();
+  renderAll();
+})();
 
 document.getElementById('detailModal').addEventListener('click', function(e) {
   if (e.target === this) closeDetailModal();
