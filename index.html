@@ -301,12 +301,12 @@ input:focus,textarea:focus{border-color:rgba(0,255,204,.35)}
 // !! CONFIGURE THIS !!
 // ═══════════════════════════════════════════
 const CONFIG = {
-  owner: 'YOUR_GITHUB_USERNAME',   // e.g. 'pankaj123'
-  repo:  'YOUR_REPO_NAME',         // e.g. 'pinevault'
+  owner: 'pankaj112343',   // e.g. 'pankaj123'
+  repo:  'Algo-code',         // e.g. 'pinevault'
   branch: 'main'
 };
 // Data file URL — reads strategies.json from your repo
-const DATA_URL = `https://raw.githubusercontent.com/${CONFIG.owner}/${CONFIG.repo}/${CONFIG.branch}/data/strategies.json`;
+const DATA_URL = `https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/data/strategies.json`;
 const REQUESTS_API = `https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/data/requests.json`;
 
 // ═══════════════════════════════════════════
@@ -327,9 +327,14 @@ let existingRequestsSha = null;
 async function init() {
   showLoader();
   try {
-    const r = await fetch(DATA_URL + '?t=' + Date.now());
+    const r = await fetch(DATA_URL + '?t=' + Date.now(), {
+      headers: { 'Accept': 'application/vnd.github.v3+json' }
+    });
     if (!r.ok) throw new Error('not found');
-    strategies = await r.json();
+    const json = await r.json();
+    // GitHub API returns content as base64
+    const decoded = decodeURIComponent(escape(atob(json.content.replace(/\n/g, ''))));
+    strategies = JSON.parse(decoded);
   } catch(e) {
     strategies = [];
   }
