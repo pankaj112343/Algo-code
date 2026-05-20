@@ -280,17 +280,17 @@ input:focus,textarea:focus{border-color:rgba(0,255,204,.35)}
   <div class="mod" style="max-width:500px">
     <div class="mx" onclick="closeBuy()">✕</div>
     <div style="font-size:1.15rem;font-weight:800;margin-bottom:4px">🛒 Purchase Request</div>
-    <div style="font-size:.81rem;color:var(--t2);margin-bottom:20px" id="buySub">Fill after making UPI payment</div>
+    <div style="font-size:.81rem;color:var(--t2);margin-bottom:6px" id="buySub">Fill after making UPI payment</div>
+    <div style="background:rgba(37,211,102,.07);border:1px solid rgba(37,211,102,.2);border-radius:10px;padding:12px 14px;font-size:.79rem;color:#25d366;margin-bottom:18px;line-height:1.6">
+      📱 After clicking Send — WhatsApp will open. <strong>Also send your payment screenshot</strong> in the same WhatsApp chat.
+    </div>
     <div class="err-box" id="buyErr"></div>
     <div class="fg"><label>Your Name</label><input type="text" id="buyName" placeholder="Full name"></div>
     <div class="fg"><label>Phone Number</label><input type="tel" id="buyPhone" placeholder="+91 XXXXXXXXXX"></div>
     <div class="fg"><label>Transaction / UTR ID</label><input type="text" id="buyTxn" placeholder="UPI transaction reference"></div>
-    <div class="fg">
-      <label>Payment Screenshot</label>
-      <div class="fd"><input type="file" id="ssIn" accept="image/*" onchange="hSS(this)"><div class="fd-i">📸</div><div class="fd-t">Upload payment screenshot (JPG/PNG)</div></div>
-      <div class="fprev" id="ssPrev">✅ <span id="ssNm"></span></div>
-    </div>
-    <button class="btn-full btn-gold" onclick="submitBuy()">Submit Request →</button>
+    <button class="btn-full btn-gold" onclick="submitBuy()" style="background:linear-gradient(135deg,#25d366,#128c7e);color:#fff">
+      📲 Send via WhatsApp →
+    </button>
   </div>
 </div>
 
@@ -307,7 +307,7 @@ const CONFIG = {
 };
 // Data file URL — reads strategies.json from your repo
 const DATA_URL = `https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/data/strategies.json`;
-const REQUESTS_API = `https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/data/requests.json`;
+// Data file URL
 
 // ═══════════════════════════════════════════
 // STATE
@@ -318,8 +318,6 @@ let approved = JSON.parse(localStorage.getItem('pva') || '[]');
 let currentFilter = 'all';
 let currentSearch = '';
 let curBuyId = null;
-let ssData = null;
-let existingRequestsSha = null;
 
 // ═══════════════════════════════════════════
 // INIT — fetch strategies from GitHub
@@ -567,9 +565,8 @@ async function dlVip(e, id) {
 // ═══════════════════════════════════════════
 function openBuy(e, id) {
   if (e) e.stopPropagation();
-  curBuyId = id; ssData = null;
-  document.getElementById('ssPrev').style.display = 'none';
-  ['buyName', 'buyPhone', 'buyTxn'].forEach(x => document.getElementById(x).value = '');
+  curBuyId = id;
+  ['buyName', 'buyPhone', 'buyTxn'].forEach(i => document.getElementById(i).value = '');
   const s = strategies.find(z => z.id === id);
   document.getElementById('buySub').textContent = `"${s?.name}" — ₹${s?.price}`;
   const er = document.getElementById('buyErr'); er.style.display = 'none';
@@ -578,73 +575,39 @@ function openBuy(e, id) {
 }
 function closeBuy() { document.getElementById('buyOv').classList.remove('open'); }
 
-function hSS(inp) {
-  const r = new FileReader();
-  r.onload = e => {
-    ssData = e.target.result;
-    document.getElementById('ssPrev').style.display = 'flex';
-    document.getElementById('ssNm').textContent = inp.files[0].name;
-  };
-  r.readAsDataURL(inp.files[0]);
-}
-
-async function submitBuy() {
+function submitBuy() {
   const name = document.getElementById('buyName').value.trim();
   const phone = document.getElementById('buyPhone').value.trim();
-  const txn = document.getElementById('buyTxn').value.trim();
-  const er = document.getElementById('buyErr');
-  if (!name || !phone || !txn || !ssData) {
-    er.textContent = '❌ All fields and screenshot are required.';
+  const txn  = document.getElementById('buyTxn').value.trim();
+  const er   = document.getElementById('buyErr');
+  const s    = strategies.find(z => z.id === curBuyId);
+
+  if (!name || !phone || !txn) {
+    er.textContent = '❌ Please fill all fields.';
     er.style.display = 'block'; return;
   }
-  const s = strategies.find(z => z.id === curBuyId);
-  const req = {
-    id: Date.now().toString(),
-    stratId: curBuyId,
-    stratName: s?.name,
-    name, phone, txn,
-    screenshot: ssData,
-    status: 'pending',
-    date: new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
-  };
 
-  // Save request to GitHub requests.json
-  try {
-    er.textContent = '⏳ Submitting...'; er.style.display = 'block';
-    await saveRequest(req);
-    closeBuy();
-    toast('Request submitted! Admin will review soon 🎉', 'ok');
-  } catch(err) {
-    er.textContent = '❌ Submit failed. Screenshot may be too large — try a smaller image.';
-    er.style.display = 'block';
-  }
-}
+  // Build WhatsApp message
+  const msg =
+`🛒 *New VIP Purchase Request*
 
-async function saveRequest(req) {
-  // Fetch existing requests
-  let existing = [];
-  let sha = null;
-  try {
-    const r = await fetch(REQUESTS_API, {
-      headers: { 'Accept': 'application/vnd.github.v3+json' }
-    });
-    if (r.ok) {
-      const d = await r.json();
-      sha = d.sha;
-      existing = JSON.parse(atob(d.content.replace(/\n/g, '')));
-    }
-  } catch(e) {}
+📌 *Strategy:* ${s?.name}
+💰 *Price:* ₹${s?.price}
 
-  existing.unshift(req);
-  const content = btoa(unescape(encodeURIComponent(JSON.stringify(existing, null, 2))));
+👤 *Name:* ${name}
+📞 *Phone:* ${phone}
+🔁 *Transaction ID:* ${txn}
+📅 *Date:* ${new Date().toLocaleDateString('en-IN')}
 
-  // NOTE: Writing to GitHub requires a token — requests are stored locally as fallback
-  // Store locally so admin can see when user visits admin panel on same device,
-  // OR you can set up a GitHub token read-only approach.
-  // For now: save to localStorage as backup
-  let localReqs = JSON.parse(localStorage.getItem('pvr_pending') || '[]');
-  localReqs.unshift(req);
-  localStorage.setItem('pvr_pending', JSON.stringify(localReqs));
+_Please also send your payment screenshot in this chat._`;
+
+  // Your WhatsApp number (country code + number, no + or spaces)
+  const waNumber = '918135975559';
+  const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(msg)}`;
+
+  closeBuy();
+  toast('Opening WhatsApp... 📲', 'ok');
+  setTimeout(() => window.open(waUrl, '_blank'), 500);
 }
 
 // ═══════════════════════════════════════════
